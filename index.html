@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090d19">
+  <meta name="description" content="LEVEL UP — trasforma le tue attività in progressi.">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./style.css">
+  <title>LEVEL UP</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="LEVEL UP home"><span class="brand-mark">L<span>+</span></span><span>LEVEL <b>UP</b><small>YOUR PERSONAL SYSTEM</small></span></a>
+      <button id="profileButton" class="avatar" aria-label="Impostazioni profilo">LV</button>
+    </header>
+
+    <main>
+      <section id="dashboardView" class="view active">
+        <div class="hero-panel">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="pulse"></span> IL TUO PERCORSO, OGGI</p>
+            <h1>Fai un passo.<br><em>Salì di livello.</em></h1>
+            <p class="muted" id="todayLabel">Il progresso si costruisce un giorno alla volta.</p>
+          </div>
+          <div class="level-orb"><div class="orb-inner"><span class="orb-caption">LIVELLO</span><strong id="levelNumber">1</strong><span id="levelTitle">NOVIZIO</span></div></div>
+          <div class="xp-row"><div><strong id="xpTotal">0 XP</strong><span class="muted"> esperienza totale</span></div><span id="xpProgressText">0 / 100 XP</span></div>
+          <div class="progress-track"><div id="xpProgress" class="progress-fill"></div></div>
+        </div>
+
+        <div class="metric-grid">
+          <article class="metric-card"><span class="metric-icon cyan">◈</span><div><span class="metric-label">COMPLETAMENTO</span><strong id="completionPercent">0%</strong><small id="completionSub">0 di 0 missioni</small></div></article>
+          <article class="metric-card"><span class="metric-icon violet">ϟ</span><div><span class="metric-label">COSTANZA</span><strong><span id="streakCount">0</span> <small>giorni</small></strong><small>serie attuale</small></div></article>
+        </div>
+
+        <div class="section-heading"><div><p class="eyebrow">OBIETTIVO QUOTIDIANO</p><h2>Le tue missioni</h2></div><button class="text-button" data-nav="missions">Vedi tutte <span>↗</span></button></div>
+        <div id="dailyMissionList" class="mission-list"></div>
+        <button class="add-mission-button" id="quickAddButton"><span>＋</span><div><strong>Aggiungi una missione</strong><small>Una piccola azione, un nuovo progresso</small></div><span class="plus-end">＋</span></button>
+
+        <div class="section-heading special-heading"><div><p class="eyebrow">SFIDA EXTRA</p><h2>Missione speciale</h2></div><span class="tag tag-violet">BONUS XP</span></div>
+        <article class="special-card"><div class="special-symbol">✦</div><div><strong id="specialTitle">La prima vittoria</strong><p id="specialDescription">Completa una missione oggi e inizia la tua serie.</p></div><div class="special-reward">+25 XP</div></article>
+      </section>
+
+      <section id="missionsView" class="view">
+        <div class="page-intro"><p class="eyebrow">IL TUO PIANO D'AZIONE</p><h1>Missioni<span class="accent-dot">.</span></h1><p class="muted">Costruisci il tuo sistema, un'attività alla volta.</p></div>
+        <div class="filter-row" id="missionFilters"><button class="filter-chip selected" data-filter="active">Attive</button><button class="filter-chip" data-filter="all">Tutte</button><button class="filter-chip" data-filter="archived">Archiviate</button></div>
+        <div id="allMissionList" class="mission-list"></div>
+        <button class="floating-add" id="floatingAdd" aria-label="Nuova missione">＋</button>
+      </section>
+
+      <section id="statsView" class="view">
+        <div class="page-intro"><p class="eyebrow">DATI, NON SENSAZIONI</p><h1>Statistiche<span class="accent-dot">.</span></h1><p class="muted">Misura i progressi e trova il tuo ritmo.</p></div>
+        <div class="stats-summary"><div><span class="metric-label">XP TOTALI</span><strong id="statsXP">0</strong></div><div><span class="metric-label">MISSIONI COMPLETATE</span><strong id="statsCompleted">0</strong></div><div><span class="metric-label">BADGE SBLOCCATI</span><strong id="statsBadges">0</strong></div></div>
+        <article class="chart-card"><div class="section-heading"><div><p class="eyebrow">ULTIMI 7 GIORNI</p><h2>Costanza quotidiana</h2></div></div><div id="weeklyChart" class="bar-chart" aria-label="Grafico completamenti ultimi sette giorni"></div></article>
+        <article class="chart-card"><div class="section-heading"><div><p class="eyebrow">ESPERIENZA</p><h2>XP guadagnati</h2></div></div><div id="xpChart" class="bar-chart xp-chart" aria-label="Grafico XP ultimi sette giorni"></div></article>
+        <div class="section-heading"><div><p class="eyebrow">TRAGUARDI</p><h2>Achievement</h2></div></div>
+        <div id="badgeList" class="badge-grid"></div>
+      </section>
+
+      <section id="profileView" class="view">
+        <div class="page-intro"><p class="eyebrow">IL TUO SPAZIO</p><h1>Profilo<span class="accent-dot">.</span></h1><p class="muted">Personalizza il sistema e gestisci i tuoi dati.</p></div>
+        <article class="settings-card"><div class="settings-avatar">LV</div><div class="settings-main"><strong id="profileLevel">Livello 1 · Novizio</strong><p class="muted">Il tuo percorso personale</p></div></article>
+        <div class="settings-group"><h3>DATI E BACKUP</h3><button class="settings-row" id="exportJson"><span class="setting-icon">⇩</span><span><strong>Esporta backup completo</strong><small>Missioni, progressi, XP e impostazioni in JSON</small></span><b>›</b></button><button class="settings-row" id="exportCsv"><span class="setting-icon">▤</span><span><strong>Esporta statistiche CSV</strong><small>Apribile con Excel o altri fogli di calcolo</small></span><b>›</b></button><button class="settings-row" id="importButton"><span class="setting-icon">⇧</span><span><strong>Importa backup</strong><small>Ripristina un backup JSON di LEVEL UP</small></span><b>›</b></button><input type="file" id="importFile" accept=".json,application/json" hidden></div>
+        <div class="settings-group"><h3>PROMEMORIA</h3><div class="settings-row"><span class="setting-icon">◷</span><span><strong>Notifiche del browser</strong><small id="notificationStatus">Controlla la compatibilità del dispositivo</small></span><button class="small-button" id="notificationButton">Attiva</button></div><p class="settings-note">I promemoria in questa prima versione funzionano mentre l'app è aperta. Le notifiche programmate affidabili a browser chiuso richiedono un'integrazione aggiuntiva.</p></div>
+        <div class="settings-group"><h3>GESTIONE</h3><button class="settings-row" id="resetButton"><span class="setting-icon danger">↻</span><span><strong>Reset dell'app</strong><small>Cancella tutti i dati locali di LEVEL UP</small></span><b>›</b></button></div>
+        <p class="footer-note">LEVEL UP · Versione 1.0 · I dati restano sul tuo dispositivo.</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navigazione principale">
+      <button class="nav-item active" data-view="dashboard"><span>⌂</span><small>Home</small></button>
+      <button class="nav-item" data-view="missions"><span>◈</span><small>Missioni</small></button>
+      <button class="nav-item" data-view="stats"><span>▥</span><small>Statistiche</small></button>
+      <button class="nav-item" data-view="profile"><span>◎</span><small>Profilo</small></button>
+    </nav>
+  </div>
+
+  <dialog id="missionDialog" class="modal">
+    <form id="missionForm" method="dialog">
+      <div class="modal-header"><div><p class="eyebrow">COSTRUISCI IL TUO PERCORSO</p><h2 id="dialogTitle">Nuova missione</h2></div><button type="button" class="icon-button" id="closeDialog" aria-label="Chiudi">×</button></div>
+      <input type="hidden" id="missionId">
+      <label for="missionName">Nome missione</label><input id="missionName" maxlength="90" required placeholder="Es. Leggere 10 pagine">
+      <label for="missionCategory">Categoria</label><select id="missionCategory"><option>Salute</option><option>Fitness</option><option>Studio</option><option>Lavoro</option><option>Casa</option><option>Mindset</option><option>Personale</option></select>
+      <label for="missionType">Ricorrenza</label><select id="missionType"><option value="daily">Ogni giorno</option><option value="weekly">Giorni selezionati</option><option value="once">Una volta</option></select>
+      <div id="weekDays" class="weekday-picker" hidden><label class="weekday"><input type="checkbox" value="1" checked> Lun</label><label class="weekday"><input type="checkbox" value="2" checked> Mar</label><label class="weekday"><input type="checkbox" value="3" checked> Mer</label><label class="weekday"><input type="checkbox" value="4" checked> Gio</label><label class="weekday"><input type="checkbox" value="5" checked> Ven</label><label class="weekday"><input type="checkbox" value="6"> Sab</label><label class="weekday"><input type="checkbox" value="0"> Dom</label></div>
+      <div class="form-grid"><div><label for="missionXP">Ricompensa XP</label><input id="missionXP" type="number" min="5" max="500" step="5" value="20" required></div><div><label for="missionDifficulty">Difficoltà</label><select id="missionDifficulty"><option value="1">Facile</option><option value="2" selected>Media</option><option value="3">Difficile</option></select></div></div>
+      <label for="missionTime">Orario promemoria (facoltativo)</label><input id="missionTime" type="time">
+      <label for="missionDescription">Nota (facoltativa)</label><textarea id="missionDescription" rows="2" maxlength="220" placeholder="Come vuoi completarla?"></textarea>
+      <div class="modal-actions"><button type="button" id="cancelDialog" class="secondary-button">Annulla</button><button type="submit" class="primary-button">Salva missione <span>↗</span></button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="./database.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

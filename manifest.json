@@ -1,0 +1,27 @@
+{
+  "id": "./index.html",
+  "name": "LEVEL UP — Personal Progress System",
+  "short_name": "LEVEL UP",
+  "description": "Trasforma le tue attività in progressi.",
+  "lang": "it",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#090d19",
+  "theme_color": "#090d19",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
