@@ -1,0 +1,83 @@
+name: Build LEVEL UP Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - android-native
+    paths:
+      - "www/**"
+      - "package.json"
+      - "capacitor.config.json"
+      - "vite.config.js"
+      - ".github/workflows/android-apk.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build web application
+        run: npm run build
+
+      - name: Generate Android project
+        run: npx cap add android
+
+      - name: Sync Capacitor plugins
+        run: npx cap sync android
+
+      - name: Add Android notification permissions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          path = Path("android/app/src/main/AndroidManifest.xml")
+          content = path.read_text()
+          permissions = """
+              <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+              <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+          """
+          if "android.permission.POST_NOTIFICATIONS" not in content:
+              content = re.sub(r"(<manifest\\b[^>]*>)", r"\\1" + permissions, content, count=1)
+          path.write_text(content)
+          PY
+
+      - name: Build debug APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: LEVEL-UP-Android-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
