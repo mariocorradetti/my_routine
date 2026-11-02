@@ -26,7 +26,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -39,6 +38,11 @@ jobs:
 
       - name: Install Android SDK packages
         run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Copy PWA icons into Android web assets
+        run: |
+          mkdir -p www/icons
+          cp icons/icon-192.png icons/icon-512.png www/icons/
 
       - name: Install dependencies
         run: npm install
@@ -64,7 +68,7 @@ jobs:
               <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
           """
           if "android.permission.POST_NOTIFICATIONS" not in content:
-              content = re.sub(r"(<manifest\\b[^>]*>)", r"\\1" + permissions, content, count=1)
+              content = re.sub(r"(<manifest\b[^>]*>)", r"\1" + permissions, content, count=1)
           path.write_text(content)
           PY
 
