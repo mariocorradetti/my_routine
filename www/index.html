@@ -31,7 +31,7 @@
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="#" aria-label="LEVEL UP home"><span class="brand-mark">L<span>+</span></span><span>LEVEL <b>UP</b><small>YOUR PERSONAL SYSTEM</small></span></a>
-      <button id="profileButton" class="avatar" aria-label="Impostazioni profilo">LV</button>
+      <button id="profileButton" class="avatar" aria-label="Apri profilo">👨‍🚀</button>
     </header>
 
     <main>
@@ -40,7 +40,7 @@
           <div class="hero-copy">
             <p class="eyebrow"><span class="pulse"></span> IL TUO PERCORSO, OGGI</p>
             <h1>Fai un passo.<br><em>Salì di livello.</em></h1>
-            <p class="muted" id="todayLabel">Il progresso si costruisce un giorno alla volta.</p>
+            <p class="muted" id="todayLabel">Il progresso si costruisce un giorno alla volta.</p><p class="welcome-name" id="welcomeName">Bentornato, Mario</p>
           </div>
           <div class="level-orb"><div class="orb-inner"><span class="orb-caption">LIVELLO</span><strong id="levelNumber">1</strong><span id="levelTitle">NOVIZIO</span></div></div>
           <div class="xp-row"><div><strong id="xpTotal">0 XP</strong><span class="muted"> esperienza totale</span></div><span id="xpProgressText">0 / 100 XP</span></div>
@@ -78,7 +78,18 @@
 
       <section id="profileView" class="view">
         <div class="page-intro"><p class="eyebrow">IL TUO SPAZIO</p><h1>Profilo<span class="accent-dot">.</span></h1><p class="muted">Personalizza il sistema e gestisci i tuoi dati.</p></div>
-        <article class="settings-card"><div class="settings-avatar">LV</div><div class="settings-main"><strong id="profileLevel">Livello 1 · Novizio</strong><p class="muted">Il tuo percorso personale</p></div></article>
+        <article class="settings-card profile-hero-card"><div class="settings-avatar astronaut-avatar" id="profileAvatar">👨‍🚀</div><div class="settings-main"><strong id="profileDisplayName">Mario</strong><p class="muted" id="profileLevel">Livello 1 · Novizio</p><span class="profile-xp" id="profileXp">0 XP accumulati</span></div></article>
+        <div class="settings-group"><h3>IDENTITÀ</h3><div class="profile-editor">
+          <label for="profileName">Nome</label><input id="profileName" maxlength="40" value="Mario" autocomplete="given-name">
+          <label for="profileNickname">Nickname <span class="optional-label">(facoltativo)</span></label><input id="profileNickname" maxlength="24" placeholder="Lascia vuoto per usare il tuo nome">
+          <div class="profile-avatar-choice"><span>Avatar</span><strong>👨‍🚀 Astronauta</strong></div>
+          <button class="primary-button profile-save" id="saveProfileButton" type="button">Salva profilo <span>↗</span></button>
+        </div></div>
+        <div class="profile-highlights">
+          <article><span>🔥</span><small>STREAK ATTUALE</small><strong id="profileStreak">0 giorni</strong></article>
+          <article><span>🏆</span><small>ACHIEVEMENT</small><strong id="profileAchievements">0 / 8</strong></article>
+          <article><span>🎯</span><small>MISSIONI COMPLETATE</small><strong id="profileCompleted">0</strong></article>
+        </div>
         <div class="settings-group"><h3>DATI E BACKUP</h3><button class="settings-row" id="exportJson"><span class="setting-icon">⇩</span><span><strong>Esporta backup completo</strong><small>Missioni, progressi, XP e impostazioni in JSON</small></span><b>›</b></button><button class="settings-row" id="exportCsv"><span class="setting-icon">▤</span><span><strong>Esporta statistiche CSV</strong><small>Apribile con Excel o altri fogli di calcolo</small></span><b>›</b></button><button class="settings-row" id="importButton"><span class="setting-icon">⇧</span><span><strong>Importa backup</strong><small>Ripristina un backup JSON di LEVEL UP</small></span><b>›</b></button><input type="file" id="importFile" accept=".json,application/json" hidden></div>
         <div class="settings-group"><h3>PROMEMORIA</h3>
           <div class="settings-row"><span class="setting-icon">◷</span><span><strong>Notifiche LEVEL UP</strong><small id="notificationStatus">Controlla i permessi del dispositivo</small></span><button class="small-button" id="notificationButton">Attiva</button></div>
