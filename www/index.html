@@ -9,8 +9,25 @@
   <link rel="icon" href="./icons/icon-192.png">
   <link rel="stylesheet" href="./style.css">
   <title>LEVEL UP</title>
+  <style>
+    #bootDiagnostic{position:fixed;z-index:99999;left:12px;right:12px;top:calc(env(safe-area-inset-top, 0px) + 8px);padding:12px 14px;border:1px solid #57e4ed66;border-radius:12px;background:#101b2eee;color:#edf3ff;font:12px/1.5 system-ui,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+    #bootDiagnostic[hidden]{display:none}
+  </style>
+  <script>
+    window.__LEVEL_UP_BOOT = {
+      stage: "HTML caricato",
+      setStage(value){ this.stage=value; const el=document.getElementById("bootDiagnostic"); if(el) el.textContent="LEVEL UP · "+value; },
+      fail(value){ const el=document.getElementById("bootDiagnostic"); if(el){el.hidden=false;el.textContent="LEVEL UP · ERRORE\\n"+value+"\\nFase: "+this.stage;} }
+    };
+    window.addEventListener("error", e => {
+      if(e.target && e.target.tagName==="SCRIPT") window.__LEVEL_UP_BOOT.fail("Impossibile caricare il modulo JavaScript: "+(e.target.src||"app.js"));
+      else if(e.message) window.__LEVEL_UP_BOOT.fail(e.message+" ("+(e.filename||"")+":"+e.lineno+")");
+    }, true);
+    window.addEventListener("unhandledrejection", e => window.__LEVEL_UP_BOOT.fail(String(e.reason && (e.reason.stack||e.reason.message) || e.reason)));
+  </script>
 </head>
 <body>
+  <div id="bootDiagnostic">LEVEL UP · Avvio in corso…</div>
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="#" aria-label="LEVEL UP home"><span class="brand-mark">L<span>+</span></span><span>LEVEL <b>UP</b><small>YOUR PERSONAL SYSTEM</small></span></a>
