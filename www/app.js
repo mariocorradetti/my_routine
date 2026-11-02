@@ -13,13 +13,16 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
   const escapeHtml = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
   const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : `m-${Date.now()}-${Math.random().toString(36).slice(2)}`);
   const LEVEL_TITLES = ["Novizio","Esploratore","Costruttore","Disciplinato","Veterano","Elite","Maestro","Leggenda","Ascendente","Inevitabile"];
+  const DEFAULT_PROFILE = { name: "Mario", nickname: "", avatar: "astronaut", totalXp: 0, streak: 0, lastActiveDate: null };
   const BADGES = [
     {id:"first",icon:"✦",name:"Primo passo",desc:"Completa la tua prima missione.",test:s=>Object.values(s.completions).reduce((n,a)=>n+a.length,0)>=1},
     {id:"five",icon:"◈",name:"In movimento",desc:"Completa 5 missioni.",test:s=>Object.values(s.completions).reduce((n,a)=>n+a.length,0)>=5},
     {id:"twentyfive",icon:"ϟ",name:"Forza dell'abitudine",desc:"Completa 25 missioni.",test:s=>Object.values(s.completions).reduce((n,a)=>n+a.length,0)>=25},
     {id:"xp100",icon:"⚡",name:"Energia pura",desc:"Raggiungi 100 XP totali.",test:s=>s.profile.totalXp>=100},
     {id:"xp500",icon:"⬡",name:"Veterano XP",desc:"Raggiungi 500 XP totali.",test:s=>s.profile.totalXp>=500},
-    {id:"streak3",icon:"🔥",name:"Tre di fila",desc:"Completa missioni per 3 giorni consecutivi.",test:s=>calculateStreak(s)>=3}
+    {id:"streak3",icon:"🔥",name:"Tre di fila",desc:"Completa missioni per 3 giorni consecutivi.",test:s=>calculateStreak(s)>=3},
+    {id:"streak7",icon:"🌟",name:"Settimana perfetta",desc:"Completa missioni per 7 giorni consecutivi.",test:s=>calculateStreak(s)>=7},
+    {id:"fifty",icon:"🚀",name:"Sempre in movimento",desc:"Completa 50 missioni.",test:s=>totalCompleted(s)>=50}
   ];
   let state;
   let currentView = "dashboard";
@@ -78,6 +81,14 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
     $("xpProgressText").textContent=`${info.within} / ${info.need} XP`;
     $("xpProgress").style.width=`${Math.min(100,info.within/info.need*100)}%`;
     $("profileLevel").textContent=`Livello ${info.level} · ${info.title}`;
+    $("profileDisplayName").textContent=state.profile.nickname?.trim() || state.profile.name || "Esploratore";
+    $("profileXp").textContent=`${state.profile.totalXp} XP accumulati`;
+    $("profileStreak").textContent=`${calculateStreak()} giorni`;
+    $("profileAchievements").textContent=`${BADGES.filter(b=>b.test(state)).length} / ${BADGES.length}`;
+    $("profileCompleted").textContent=totalCompleted();
+    $("welcomeName").textContent=`Bentornato, ${state.profile.nickname?.trim() || state.profile.name || "Esploratore"}`;
+    $("profileName").value=state.profile.name || "Mario";
+    $("profileNickname").value=state.profile.nickname || "";
     $("statsXP").textContent=state.profile.totalXp;
     $("statsCompleted").textContent=totalCompleted();
   }
@@ -174,6 +185,16 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
     if(!m.name){showToast("Inserisci un nome per la missione.");return;}
     if(existing) state.missions=state.missions.map(x=>x.id===id?m:x); else state.missions.push(m);
     await persist();closeMission();render();showToast(existing?"Missione aggiornata.":"Missione creata.");navigate(currentView);
+  }
+  async function saveProfile() {
+    const name=$("profileName").value.trim();
+    const nickname=$("profileNickname").value.trim();
+    if(!name){showToast("Inserisci il tuo nome.");$("profileName").focus();return;}
+    state.profile.name=name;
+    state.profile.nickname=nickname;
+    state.profile.avatar="astronaut";
+    await persist();render();
+    showToast("Profilo aggiornato. Bentornato, "+(nickname||name)+"!");
   }
   async function toggleMission(id,day) {
     const m=state.missions.find(x=>x.id===id); if(!m)return;
@@ -395,6 +416,7 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
     document.querySelectorAll(".nav-item").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.view)));
     document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.nav)));
     $("profileButton").addEventListener("click",()=>navigate("profile"));
+    $("saveProfileButton").addEventListener("click",saveProfile);
     $("quickAddButton").addEventListener("click",()=>openMission());
     $("floatingAdd").addEventListener("click",()=>openMission());
     $("closeDialog").addEventListener("click",closeMission);$("cancelDialog").addEventListener("click",closeMission);
@@ -430,7 +452,11 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
     state.missions=Array.isArray(state.missions)?state.missions:[];
     state.completions=state.completions||{};state.xpEvents=Array.isArray(state.xpEvents)?state.xpEvents:[];
     state.settings=state.settings||{notifications:false};state.specialClaimed=state.specialClaimed||{};
-    state.profile=state.profile||{totalXp:0,streak:0,lastActiveDate:null};
+    state.profile={...DEFAULT_PROFILE,...(state.profile||{})};
+    state.profile.name=String(state.profile.name||"Mario");
+    state.profile.nickname=String(state.profile.nickname||"");
+    state.profile.avatar="astronaut";
+    await LevelDB.save(state);
     window.__LEVEL_UP_BOOT?.setStage("Collegamento pulsanti");
     wireEvents();
     window.__LEVEL_UP_BOOT?.setStage("Disegno schermata");
