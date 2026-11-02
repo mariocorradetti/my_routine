@@ -1,3 +1,4 @@
+import { LevelDB } from "./database.js";
 import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
 const isNativeAndroid = Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android";
