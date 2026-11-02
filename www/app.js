@@ -82,6 +82,7 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
     $("xpProgress").style.width=`${Math.min(100,info.within/info.need*100)}%`;
     $("profileLevel").textContent=`Livello ${info.level} · ${info.title}`;
     $("profileDisplayName").textContent=state.profile.nickname?.trim() || state.profile.name || "Esploratore";
+    $("identitySummaryName").textContent=state.profile.nickname?.trim() || state.profile.name || "Esploratore";
     $("profileXp").textContent=`${state.profile.totalXp} XP accumulati`;
     $("profileStreak").textContent=`${calculateStreak()} giorni`;
     $("profileAchievements").textContent=`${BADGES.filter(b=>b.test(state)).length} / ${BADGES.length}`;
@@ -194,6 +195,7 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
     state.profile.nickname=nickname;
     state.profile.avatar="astronaut";
     await persist();render();
+    setIdentityEditor(false);
     showToast("Profilo aggiornato. Bentornato, "+(nickname||name)+"!");
   }
   async function toggleMission(id,day) {
@@ -412,11 +414,20 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
       }
     }
   }
+  function setIdentityEditor(open) {
+    const editor=$("profileEditor"), toggle=$("identityToggle");
+    if(!editor || !toggle) return;
+    editor.hidden=!open;
+    toggle.setAttribute("aria-expanded",String(open));
+    $("identityToggleLabel").innerHTML=open?'Chiudi <b>−</b>':'Modifica <b>＋</b>';
+    toggle.classList.toggle("expanded",open);
+  }
   function wireEvents() {
     document.querySelectorAll(".nav-item").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.view)));
     document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.nav)));
     $("profileButton").addEventListener("click",()=>navigate("profile"));
     $("saveProfileButton").addEventListener("click",saveProfile);
+    $("identityToggle").addEventListener("click",()=>setIdentityEditor($("profileEditor").hidden));
     $("quickAddButton").addEventListener("click",()=>openMission());
     $("floatingAdd").addEventListener("click",()=>openMission());
     $("closeDialog").addEventListener("click",closeMission);$("cancelDialog").addEventListener("click",closeMission);
@@ -461,6 +472,7 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
     wireEvents();
     window.__LEVEL_UP_BOOT?.setStage("Disegno schermata");
     render();updateNotificationStatus();
+    setIdentityEditor(false);
     if(!isNativeAndroid && "serviceWorker" in navigator && (location.protocol==="https:"||location.hostname==="localhost"||location.hostname==="127.0.0.1")) {
       navigator.serviceWorker.register("./service-worker.js").catch(err=>console.warn("Service worker non registrato",err));
     }
