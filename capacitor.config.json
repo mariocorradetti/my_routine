@@ -1,0 +1,10 @@
+{
+  "appId": "it.levelup.personal",
+  "appName": "LEVEL UP",
+  "webDir": "dist",
+  "plugins": {
+    "LocalNotifications": {
+      "iconColor": "#57e4ed"
+    }
+  }
+}
