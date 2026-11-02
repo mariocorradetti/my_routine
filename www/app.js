@@ -1,6 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 import { LocalNotifications } from "@capacitor/local-notifications";
 const isNativeAndroid = Capacitor.isNativePlatform() && Capacitor.getPlatform() === "android";
+window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
 
 (() => {
   "use strict";
@@ -422,13 +423,17 @@ const isNativeAndroid = Capacitor.isNativePlatform() && Capacitor.getPlatform() 
     reminderTimer=setInterval(checkReminders,15000);
   }
   async function init() {
+    window.__LEVEL_UP_BOOT?.setStage("Lettura database locale");
     state=await LevelDB.load();
     if(!state||state.schemaVersion!==1)state=LevelDB.defaults();
     state.missions=Array.isArray(state.missions)?state.missions:[];
     state.completions=state.completions||{};state.xpEvents=Array.isArray(state.xpEvents)?state.xpEvents:[];
     state.settings=state.settings||{notifications:false};state.specialClaimed=state.specialClaimed||{};
     state.profile=state.profile||{totalXp:0,streak:0,lastActiveDate:null};
-    wireEvents();render();updateNotificationStatus();
+    window.__LEVEL_UP_BOOT?.setStage("Collegamento pulsanti");
+    wireEvents();
+    window.__LEVEL_UP_BOOT?.setStage("Disegno schermata");
+    render();updateNotificationStatus();
     if(!isNativeAndroid && "serviceWorker" in navigator && (location.protocol==="https:"||location.hostname==="localhost"||location.hostname==="127.0.0.1")) {
       navigator.serviceWorker.register("./service-worker.js").catch(err=>console.warn("Service worker non registrato",err));
     }
@@ -441,6 +446,8 @@ const isNativeAndroid = Capacitor.isNativePlatform() && Capacitor.getPlatform() 
       await persist();render();
     }
     if (isNativeAndroid && state.settings.notifications) await syncNativeReminders();
+    const diagnostic=document.getElementById("bootDiagnostic"); if(diagnostic) diagnostic.hidden=true;
+    window.__LEVEL_UP_BOOT?.setStage("App pronta");
   }
-  init().catch(err=>{console.error(err);document.body.insertAdjacentHTML("beforeend",'<p style="padding:20px;color:#ff788c">Errore inizializzazione. Ricarica l’app e riprova.</p>');});
+  init().catch(err=>{console.error(err);window.__LEVEL_UP_BOOT?.fail((err && (err.stack||err.message)) || String(err));});
 })();
