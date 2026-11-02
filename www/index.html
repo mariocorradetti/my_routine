@@ -79,7 +79,13 @@
       <section id="profileView" class="view">
         <div class="page-intro"><p class="eyebrow">IL TUO SPAZIO</p><h1>Profilo<span class="accent-dot">.</span></h1><p class="muted">Personalizza il sistema e gestisci i tuoi dati.</p></div>
         <article class="settings-card profile-hero-card"><div class="settings-avatar astronaut-avatar" id="profileAvatar">👨‍🚀</div><div class="settings-main"><strong id="profileDisplayName">Mario</strong><p class="muted" id="profileLevel">Livello 1 · Novizio</p><span class="profile-xp" id="profileXp">0 XP accumulati</span></div></article>
-        <div class="settings-group"><h3>IDENTITÀ</h3><div class="profile-editor">
+        <div class="settings-group identity-group"><h3>IDENTITÀ</h3>
+          <button type="button" class="identity-summary" id="identityToggle" aria-expanded="false" aria-controls="profileEditor">
+            <span class="identity-summary-avatar">👨‍🚀</span>
+            <span class="identity-summary-copy"><strong id="identitySummaryName">Mario</strong><small>Profilo personale</small></span>
+            <span class="identity-summary-action" id="identityToggleLabel">Modifica <b>＋</b></span>
+          </button>
+          <div class="profile-editor" id="profileEditor" hidden>
           <label for="profileName">Nome</label><input id="profileName" maxlength="40" value="Mario" autocomplete="given-name">
           <label for="profileNickname">Nickname <span class="optional-label">(facoltativo)</span></label><input id="profileNickname" maxlength="24" placeholder="Lascia vuoto per usare il tuo nome">
           <div class="profile-avatar-choice"><span>Avatar</span><strong>👨‍🚀 Astronauta</strong></div>
