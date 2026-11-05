@@ -36,3 +36,6 @@
 .identity-summary-action b{font-size:17px;font-weight:400}
 .identity-summary.expanded{border-color:#57e4ed70}
 .profile-editor[hidden]{display:none!important}
+
+.delete-action{color:#ff788c;font-size:17px}
+.delete-action:hover{color:#ff9aaa;background:#ff788c14;border-radius:8px}
