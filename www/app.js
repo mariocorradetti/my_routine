@@ -119,7 +119,8 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
   }
   function renderMissions() {
     const day=todayKey();
-    let missions=state.missions;
+    // Le attività "Solo oggi" scadute restano nello storico locale, ma non vengono più mostrate nelle liste operative.
+    let missions=state.missions.filter(m=>!(m.type==="once" && m.dueDate && m.dueDate<day));
     if(currentFilter==="active") missions=missions.filter(m=>!m.archived);
     if(currentFilter==="archived") missions=missions.filter(m=>m.archived);
     if(currentFilter==="active") missions=missions.slice().sort((a,b)=>Number(isDone(a,day))-Number(isDone(b,day)));
