@@ -62,7 +62,7 @@
 
       <section id="missionsView" class="view">
         <div class="page-intro"><p class="eyebrow">IL TUO PIANO D'AZIONE</p><h1>Missioni<span class="accent-dot">.</span></h1><p class="muted">Costruisci il tuo sistema, un'attività alla volta.</p></div>
-        <div class="filter-row" id="missionFilters"><button class="filter-chip selected" data-filter="active">Attive</button><button class="filter-chip" data-filter="all">Tutte</button><button class="filter-chip" data-filter="archived">Archiviate</button></div>
+        <div class="filter-row" id="missionFilters"><button class="filter-chip" data-filter="active">Attive</button><button class="filter-chip selected" data-filter="all">Tutte</button><button class="filter-chip" data-filter="archived">Archiviate</button></div>
         <div id="allMissionList" class="mission-list"></div>
         <button class="floating-add" id="floatingAdd" aria-label="Nuova missione">＋</button>
       </section>
@@ -122,7 +122,7 @@
       <input type="hidden" id="missionId">
       <label for="missionName">Nome missione</label><input id="missionName" maxlength="90" required placeholder="Es. Leggere 10 pagine">
       <label for="missionCategory">Categoria</label><select id="missionCategory"><option>Salute</option><option>Fitness</option><option>Studio</option><option>Lavoro</option><option>Casa</option><option>Mindset</option><option>Personale</option></select>
-      <label for="missionType">Ricorrenza</label><select id="missionType"><option value="daily">Ogni giorno</option><option value="weekly">Giorni selezionati</option><option value="once">Una volta</option></select>
+      <label for="missionType">Ricorrenza</label><select id="missionType"><option value="daily">Ogni giorno</option><option value="weekly">Giorni selezionati</option><option value="once">Solo oggi (scompare domani)</option></select>
       <div id="weekDays" class="weekday-picker" hidden><label class="weekday"><input type="checkbox" value="1" checked> Lun</label><label class="weekday"><input type="checkbox" value="2" checked> Mar</label><label class="weekday"><input type="checkbox" value="3" checked> Mer</label><label class="weekday"><input type="checkbox" value="4" checked> Gio</label><label class="weekday"><input type="checkbox" value="5" checked> Ven</label><label class="weekday"><input type="checkbox" value="6"> Sab</label><label class="weekday"><input type="checkbox" value="0"> Dom</label></div>
       <div class="form-grid"><div><label for="missionXP">Ricompensa XP</label><input id="missionXP" type="number" min="5" max="500" step="5" value="20" required></div><div><label for="missionDifficulty">Difficoltà</label><select id="missionDifficulty"><option value="1">Facile</option><option value="2" selected>Media</option><option value="3">Difficile</option></select></div></div>
       <label for="missionTime">Orario promemoria (facoltativo)</label><input id="missionTime" type="time">
