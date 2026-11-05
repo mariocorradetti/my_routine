@@ -26,7 +26,7 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
   ];
   let state;
   let currentView = "dashboard";
-  let currentFilter = "active";
+  let currentFilter = "all";
   let toastTimer;
   let reminderTimer;
 
@@ -96,12 +96,12 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
   function missionCard(m, day, showStatus=true) {
     const done=isDone(m,day);
     const category=escapeHtml(m.category);
-    const typeLabel=m.type==="daily"?"Giornaliera":m.type==="weekly"?"Settimanale":"Una volta";
+    const typeLabel=m.type==="daily"?"Ogni giorno":m.type==="weekly"?"Giorni selezionati":"Solo oggi";
     const description=m.description ? `<p>${escapeHtml(m.description)}</p>` : `<p>${typeLabel}${m.time?` · Promemoria ${escapeHtml(m.time)}`:""}</p>`;
     return `<article class="mission-card ${done?"completed":""}" data-card="${escapeHtml(m.id)}">
       <button class="check-button" data-action="toggle" data-id="${escapeHtml(m.id)}" data-day="${day}" aria-label="${done?"Segna come non completata":"Completa missione"}">${done?"✓":""}</button>
       <div class="mission-info"><strong>${escapeHtml(m.name)}</strong>${description}<div class="mission-meta"><span class="tag">${category}</span><span class="tag tag-violet">${typeLabel}</span><span class="xp-pill">＋${m.xp} XP</span></div></div>
-      ${showStatus?`<div class="mission-actions"><button class="tiny-action" data-action="edit" data-id="${escapeHtml(m.id)}" aria-label="Modifica missione">✎</button><button class="tiny-action" data-action="more" data-id="${escapeHtml(m.id)}" aria-label="Altre opzioni">⋯</button></div>`:""}
+      ${showStatus?`<div class="mission-actions"><button class="tiny-action" data-action="edit" data-id="${escapeHtml(m.id)}" aria-label="Modifica missione">✎</button><button class="tiny-action" data-action="more" data-id="${escapeHtml(m.id)}" aria-label="Altre opzioni">⋯</button><button class="tiny-action delete-action" data-action="delete" data-id="${escapeHtml(m.id)}" aria-label="Elimina attività" title="Elimina">⌫</button></div>`:""}
     </article>`;
   }
   function empty(text, sub) { return `<div class="empty-state"><strong>${escapeHtml(text)}</strong>${escapeHtml(sub)}</div>`; }
@@ -111,7 +111,7 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
     $("completionPercent").textContent=`${planned.length?Math.round(done/planned.length*100):0}%`;
     $("completionSub").textContent=`${done} di ${planned.length} missioni`;
     $("streakCount").textContent=calculateStreak();
-    $("dailyMissionList").innerHTML=planned.length?planned.slice(0,5).map(m=>missionCard(m,day)).join(""):empty("Giornata libera?","Aggiungi la tua prima missione per iniziare il percorso.");
+    $("dailyMissionList").innerHTML=planned.length?planned.map(m=>missionCard(m,day)).join(""):empty("Giornata libera?","Aggiungi la tua prima missione per iniziare il percorso.");
     const hasCompleted=done>0;
     const claimed=state.specialClaimed[day];
     $("specialTitle").textContent=claimed?"Sfida completata!":"La prima vittoria";
@@ -181,7 +181,7 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
       type, days:type==="weekly"?days:[], xp:Math.min(500,Math.max(5,Number($("missionXP").value)||20)),
       difficulty:Number($("missionDifficulty").value)||1, time:$("missionTime").value,
       description:$("missionDescription").value.trim(), archived:existing?.archived||false,
-      createdAt:existing?.createdAt||new Date().toISOString(), dueDate:existing?.dueDate||todayKey()
+      createdAt:existing?.createdAt||new Date().toISOString(), dueDate:type==="once"?(existing?.type==="once"?existing.dueDate:todayKey()):(existing?.dueDate||todayKey())
     };
     if(!m.name){showToast("Inserisci un nome per la missione.");return;}
     if(existing) state.missions=state.missions.map(x=>x.id===id?m:x); else state.missions.push(m);
@@ -227,6 +227,14 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
     state.specialClaimed[day]=true;state.profile.totalXp+=25;
     state.xpEvents.push({id:uuid(),key:`special@${day}`,kind:"special",date:day,amount:25,createdAt:new Date().toISOString()});
     await persist();render();showToast("Bonus riscosso: +25 XP!");
+  }
+  async function deleteMission(id) {
+    const m=state.missions.find(x=>x.id===id);
+    if(!m)return;
+    if(!confirm(`Eliminare definitivamente l'attività "${m.name}"? Gli XP già guadagnati e lo storico delle completazioni resteranno nelle statistiche.`))return;
+    state.missions=state.missions.filter(x=>x.id!==id);
+    await persist();render();
+    showToast("Attività eliminata.");
   }
   async function moreMission(id) {
     const m=state.missions.find(x=>x.id===id);if(!m)return;
@@ -439,6 +447,7 @@ window.__LEVEL_UP_BOOT?.setStage("Modulo JavaScript avviato");
       if(action==="toggle")toggleMission(id,day);
       if(action==="edit")openMission(state.missions.find(m=>m.id===id));
       if(action==="more")moreMission(id);
+      if(action==="delete")deleteMission(id);
     });
     $("specialTitle").parentElement.parentElement.addEventListener("click",claimSpecial);
     $("exportJson").addEventListener("click",exportJSON);$("exportCsv").addEventListener("click",exportCSV);
